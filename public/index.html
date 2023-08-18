@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <div class="total-block">
+    <h1>
+        Registration</h1>
+    <form  name="userForm">
+        <input type="hidden" name="id" value="0" />
+        <div class="email">
+            <input class="form-control" type="email" placeholder="Ваш email" name="email">
+        </div>
+    
+        <div class="name">
+            <input class="form-control" type="text" placeholder="Ваше имя" name="name">
+        </div>
+    
+        <div class="age">
+            <input class="form-control" type="text" placeholder="Ваш возраст" name="age">
+        </div>
+    
+        <div class="password">
+            <input class="form-control" type="password" placeholder="Создайте надежный пароль" name="password">
+        </div>
+        <input type="submit">
+   
+   </form>
+</div>
+<script>
+      // Получение всех пользователей
+      async function getUsers() {
+            // отправляет запрос и получаем ответ
+            const response = await fetch("/api/users", {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            // если запрос прошел нормально
+            if (response.ok === true) {
+                // получаем данные
+                const users = await response.json();
+                console.log(users)
+            }
+        }
+    async function CreateUser(email, name, age, password){
+        const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: {"Accept": "application/json", "Content-Type": "application/json"},
+            body: JSON.stringify({
+                email: email, 
+                name: name,
+                age:  parseInt(age, 10), 
+                password: password
+            })
+        })
+        if(response.ok === true){
+            const user = await response.json()
+            reset()
+        }
+    }
+    function reset() {
+            const form = document.forms["userForm"];
+            form.reset();
+            form.elements["id"].value = 0;
+        }
+        
+
+
+   // отправка формы
+   document.forms["userForm"].addEventListener("submit", e => {
+    e.preventDefault();
+            const form = document.forms["userForm"];
+            const id = form.elements["id"].value;
+            const email = form.elements["email"].value;
+            const name = form.elements["name"].value;
+            const age = form.elements["age"].value;
+            const password= form.elements["password"].value;
+            if (id == 0)
+                CreateUser(email, name, age,password)
+            else
+                editUser(id, name, age);
+         
+        });
+
+
+</script>
+</body>
+</html>
